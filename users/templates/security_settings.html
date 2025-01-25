@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="security-settings">
+    <h2>Säkerhetsinställningar</h2>
+    <div class="security-options">
+        <div class="option">
+            <h3>Ändra Lösenord</h3>
+            <a href="{% url 'password_change' %}" class="btn">Byt lösenord</a>
+        </div>
+        <div class="option">
+            <h3>Two-Factor Authentication</h3>
+            {% if user.profile.tfa_enabled %}
+                <p class="status active">Aktiverad</p>
+                <a href="{% url 'disable_2fa' %}" class="btn btn-danger">Avaktivera</a>
+            {% else %}
+                <p class="status inactive">Inaktiverad</p>
+                <a href="{% url 'enable_2fa' %}" class="btn">Aktivera</a>
+            {% endif %}
+        </div>
+        <div class="option">
+            <h3>API Nyckelhantering</h3>
+            <button class="btn" id="rotate-secret">Rotera Klientnyckel</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

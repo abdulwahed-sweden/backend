@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="api-docs">
+    <h1>API Dokumentation</h1>
+    
+    <div class="endpoint-group">
+        <h2>Autentisering</h2>
+        <div class="endpoint">
+            <h3>Registrera användare</h3>
+            <pre><code>POST /api/auth/register/
+{
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "personnummer": "string"
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="endpoint-group">
+        <h2>Profil</h2>
+        <div class="endpoint">
+            <h3>Hämta klientuppgifter</h3>
+            <pre><code>GET /api/auth/profile/
+Authorization: Bearer {access_token}</code></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

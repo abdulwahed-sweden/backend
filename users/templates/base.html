@@ -1,0 +1,92 @@
+<!-- templates/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <!-- Existing head content -->
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="{% url 'home' %}" class="logo">
+                <img src="{% static 'img/logo.svg' %}" alt="Svensk Logotyp">
+                MinApp
+            </a>
+            
+            <div class="nav-links" id="navLinks">
+                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Hem</a>
+                <a href="{% url 'api_docs' %}" class="{% if request.resolver_match.url_name == 'api_docs' %}active{% endif %}">API Dokumentation</a>
+                
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <button class="dropbtn">{{ user.username }} ▼</button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'profile' %}">Min Profil</a>
+                            <a href="{% url 'profile_edit' %}">Inställningar</a>
+                            <a href="{% url 'security_settings' %}">Säkerhet</a>
+                        </div>
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn-logout">Logga Ut</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn-login">Logga In</a>
+                    <a href="{% url 'register' %}" class="btn-register">Registrera</a>
+                {% endif %}
+            </div>
+            
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>Om Oss</h4>
+                    <ul>
+                        <li><a href="/om-oss">Vår Historia</a></li>
+                        <li><a href="/karriar">Karriär</a></li>
+                        <li><a href="/kontakt">Kontakta Oss</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/integritet">Integritetspolicy</a></li>
+                        <li><a href="/villkor">Användarvillkor</a></li>
+                        <li><a href="/cookies">Cookie-inställningar</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Följ Oss</h4>
+                    <div class="social-links">
+                        <a href="#"><img src="{% static 'img/facebook.svg' %}" alt="Facebook"></a>
+                        <a href="#"><img src="{% static 'img/linkedin.svg' %}" alt="LinkedIn"></a>
+                        <a href="#"><img src="{% static 'img/twitter.svg' %}" alt="Twitter"></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2023 MinApp AB | Org.nr: 556123-4567</p>
+                <p>Adress: Sveavägen 1, 123 45 Stockholm</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

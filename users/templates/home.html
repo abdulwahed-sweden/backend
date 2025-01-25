@@ -1,0 +1,43 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Startsida{% endblock %}
+
+{% block content %}
+    <div class="welcome-section">
+        {% if user.is_authenticated %}
+            <h1>Välkommen, {{ user.username }}!</h1>
+            <div class="profile-info">
+                <h2>Din Profilinformation</h2>
+                <p><strong>Klient-ID:</strong> {{ user.profile.client_id }}</p>
+                <p><strong>Klientnyckel:</strong> {{ user.profile.client_secret }}</p>
+                <p><strong>Registrerad:</strong> {{ user.profile.created_at|date:"Y-m-d H:i" }}</p>
+            </div>
+        {% else %}
+            <h1>Välkommen till vår tjänst</h1>
+            <div class="auth-options">
+                <a href="{% url 'login' %}" class="btn">Logga in</a>
+                <a href="{% url 'register' %}" class="btn">Registrera konto</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <section class="api-info">
+        <h2>API Endpoints</h2>
+        <div class="endpoint-list">
+            <div class="endpoint">
+                <h3>Registrering</h3>
+                <code>POST /api/auth/register/</code>
+            </div>
+            <div class="endpoint">
+                <h3>Inloggning</h3>
+                <code>POST /api/auth/login/</code>
+            </div>
+            <div class="endpoint">
+                <h3>Profilinformation</h3>
+                <code>GET /api/auth/profile/</code>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,92 +1,107 @@
-<!-- templates/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-    <!-- Existing head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MinApp{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a href="{% url 'home' %}" class="logo">
-                <img src="{% static 'img/logo.svg' %}" alt="Svensk Logotyp">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% static 'img/logo.svg' %}" alt="Svensk Logotyp" width="30" height="30" class="d-inline-block align-text-top">
                 MinApp
             </a>
-            
-            <div class="nav-links" id="navLinks">
-                <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Hem</a>
-                <a href="{% url 'api_docs' %}" class="{% if request.resolver_match.url_name == 'api_docs' %}active{% endif %}">API Dokumentation</a>
-                
-                {% if user.is_authenticated %}
-                    <div class="dropdown">
-                        <button class="dropbtn">{{ user.username }} ▼</button>
-                        <div class="dropdown-content">
-                            <a href="{% url 'profile' %}">Min Profil</a>
-                            <a href="{% url 'profile_edit' %}">Inställningar</a>
-                            <a href="{% url 'security_settings' %}">Säkerhet</a>
-                        </div>
-                    </div>
-                    <a href="{% url 'logout' %}" class="btn-logout">Logga Ut</a>
-                {% else %}
-                    <a href="{% url 'login' %}" class="btn-login">Logga In</a>
-                    <a href="{% url 'register' %}" class="btn-register">Registrera</a>
-                {% endif %}
-            </div>
-            
-            <button class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Hem</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'api_docs' %}active{% endif %}" href="{% url 'api_docs' %}">API Dokumentation</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'profile' %}">Min Profil</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile_edit' %}">Inställningar</a></li>
+                                <li><a class="dropdown-item" href="{% url 'security_settings' %}">Säkerhet</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}">Logga Ut</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Logga In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register' %}">Registrera</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container">
+    <main class="container my-4">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer bg-light py-4">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-section">
+            <div class="row">
+                <div class="col-md-4">
                     <h4>Om Oss</h4>
-                    <ul>
+                    <ul class="list-unstyled">
                         <li><a href="/om-oss">Vår Historia</a></li>
                         <li><a href="/karriar">Karriär</a></li>
                         <li><a href="/kontakt">Kontakta Oss</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section">
+                <div class="col-md-4">
                     <h4>Legal</h4>
-                    <ul>
+                    <ul class="list-unstyled">
                         <li><a href="/integritet">Integritetspolicy</a></li>
                         <li><a href="/villkor">Användarvillkor</a></li>
                         <li><a href="/cookies">Cookie-inställningar</a></li>
                     </ul>
                 </div>
-                
-                <div class="footer-section">
+                <div class="col-md-4">
                     <h4>Följ Oss</h4>
                     <div class="social-links">
-                        <a href="#"><img src="{% static 'img/facebook.svg' %}" alt="Facebook"></a>
-                        <a href="#"><img src="{% static 'img/linkedin.svg' %}" alt="LinkedIn"></a>
-                        <a href="#"><img src="{% static 'img/twitter.svg' %}" alt="Twitter"></a>
+                        <a href="#" class="me-2"><img src="{% static 'img/facebook.svg' %}" alt="Facebook" width="24"></a>
+                        <a href="#" class="me-2"><img src="{% static 'img/linkedin.svg' %}" alt="LinkedIn" width="24"></a>
+                        <a href="#"><img src="{% static 'img/twitter.svg' %}" alt="Twitter" width="24"></a>
                     </div>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>© 2023 MinApp AB | Org.nr: 556123-4567</p>
-                <p>Adress: Sveavägen 1, 123 45 Stockholm</p>
+            <div class="footer-bottom text-center mt-4">
+                <p class="mb-0">© 2023 MinApp AB | Org.nr: 556123-4567</p>
+                <p class="mb-0">Adress: Sveavägen 1, 123 45 Stockholm</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    <!-- Custom JS -->
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

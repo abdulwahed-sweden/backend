@@ -1,10 +1,293 @@
 {% extends 'base.html' %}
 
-{% block title %}Post Detail{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Post Detail</h1>
-    <p class="text-muted-foreground">Post detail coming soon...</p>
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <article class="mb-5">
+                <!-- Post Header -->
+                <header class="mb-4">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mb-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'posts:list' %}" class="text-decoration-none">Posts</a></li>
+                            {% if post.category and post.category.slug %}
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'posts:category' post.category.slug %}" class="text-decoration-none">{{ post.category.name }}</a>
+                            </li>
+                            {% endif %}
+                            <li class="breadcrumb-item active" aria-current="page">{{ post.title|truncatewords:5 }}</li>
+                        </ol>
+                    </nav>
+                    
+                    <!-- Categories and Featured Badge -->
+                    <div class="mb-3">
+                        {% if post.category %}
+                        <span class="badge me-2 fs-6" style="background-color: {{ post.category.color }}; color: white;">
+                            <i class="bi bi-folder me-1"></i>{{ post.category.name }}
+                        </span>
+                        {% endif %}
+                        {% if post.is_featured %}
+                        <span class="badge bg-warning text-dark fs-6">
+                            <i class="bi bi-star-fill me-1"></i>Featured
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Title -->
+                    <h1 class="display-5 fw-bold text-dark mb-4">{{ post.title }}</h1>
+                    
+                    <!-- Meta Information -->
+                    <div class="row align-items-center mb-4">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center text-muted">
+                                <img src="{{ post.author.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
+                                     alt="{{ post.author.display_name }}" 
+                                     class="rounded-circle me-3" width="40" height="40">
+                                <div>
+                                    <div class="fw-semibold text-dark">{{ post.author.display_name }}</div>
+                                    <small>
+                                        <i class="bi bi-calendar me-1"></i>{{ post.published_at|date:"F d, Y" }}
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-clock me-1"></i>{{ post.content|wordcount }} words
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <div class="d-flex justify-content-md-end gap-3">
+                                <div class="stats-item">
+                                    <i class="bi bi-eye"></i>
+                                    <span>{{ post.views_count }}</span>
+                                </div>
+                                <div class="stats-item">
+                                    <i class="bi bi-heart"></i>
+                                    <span>{{ post.likes_count }}</span>
+                                </div>
+                                <div class="stats-item">
+                                    <i class="bi bi-chat"></i>
+                                    <span>{{ comments.count }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Featured Image -->
+                    {% if post.featured_image %}
+                    <div class="mb-4">
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" 
+                             class="img-fluid rounded shadow">
+                    </div>
+                    {% endif %}
+                </header>
+
+                <!-- Post Content -->
+                <div class="post-content mb-5">
+                    <div class="fs-5 lh-lg">
+                        {{ post.content|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                {% if post.tags %}
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-tags me-2"></i>Tags
+                    </h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for tag in post.tag_list %}
+                        <span class="badge bg-light text-dark border">
+                            <i class="bi bi-tag me-1"></i>{{ tag }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Share Buttons -->
+                <div class="mb-5">
+                    <h6 class="fw-bold mb-3">
+                        <i class="bi bi-share me-2"></i>Share this post
+                    </h6>
+                    <div class="d-flex gap-2">
+                        <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                        <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-linkedin"></i> LinkedIn
+                        </a>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="copyToClipboard()">
+                            <i class="bi bi-link-45deg"></i> Copy Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="mb-5">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-chat-dots me-2"></i>Comments ({{ comments.count }})
+                    </h4>
+                    
+                    {% if comments %}
+                    <div class="comments-list">
+                        {% for comment in comments %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
+                                             style="width: 40px; height: 40px;">
+                                            {{ comment.author.username|first|upper }}
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h6 class="mb-0 fw-semibold">{{ comment.author.display_name }}</h6>
+                                            <small class="text-muted">
+                                                <i class="bi bi-clock me-1"></i>{{ comment.created_at|date:"M d, Y \a\t H:i" }}
+                                            </small>
+                                        </div>
+                                        <p class="mb-0 text-dark">{{ comment.content|linebreaks }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-chat text-muted mb-3" style="font-size: 3rem;"></i>
+                        <p class="text-muted mb-0">No comments yet. Be the first to comment!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </article>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                <!-- Related Posts -->
+                {% if related_posts %}
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-collection me-2"></i>Related Posts
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for related_post in related_posts %}
+                        <div class="p-3 border-bottom">
+                            <h6 class="mb-2">
+                                <a href="{% url 'posts:detail' related_post.slug %}" 
+                                   class="text-decoration-none text-dark fw-semibold">
+                                    {{ related_post.title }}
+                                </a>
+                            </h6>
+                            <p class="text-muted small mb-2">
+                                {{ related_post.excerpt|default:related_post.content|truncatewords:15 }}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>{{ related_post.published_at|date:"M d" }}
+                                </small>
+                                <div class="d-flex gap-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-eye"></i> {{ related_post.views_count }}
+                                    </small>
+                                    <small class="text-muted">
+                                        <i class="bi bi-heart"></i> {{ related_post.likes_count }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Categories -->
+                <div class="card mb-4">
+                    <div class="card-header bg-success text-white">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-folder me-2"></i>Categories
+                        </h6>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for category in categories %}
+                        {% if category.slug %}
+                        <a href="{% url 'posts:category' category.slug %}" 
+                           class="d-flex justify-content-between align-items-center text-decoration-none p-3 border-bottom text-dark">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded me-2" 
+                                     style="width: 12px; height: 12px; background-color: {{ category.color }};"></div>
+                                {{ category.name }}
+                            </div>
+                            <span class="badge bg-light text-dark">
+                                {{ category.posts.count }}
+                            </span>
+                        </a>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="bi bi-list-ol me-2"></i>Quick Actions
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'posts:list' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Posts
+                            </a>
+                            {% if user.is_staff %}
+                            <a href="/admin/posts/post/{{ post.id }}/change/" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-pencil me-2"></i>Edit Post
+                            </a>
+                            {% endif %}
+                            <button class="btn btn-outline-danger btn-sm" onclick="printPage()">
+                                <i class="bi bi-printer me-2"></i>Print Post
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script>
+function printPage() {
+    window.print();
+}
+
+function copyToClipboard() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(function() {
+        // Show success message
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<i class="bi bi-check me-1"></i> Copied!';
+        button.classList.remove('btn-outline-secondary');
+        button.classList.add('btn-success');
+        
+        setTimeout(function() {
+            button.innerHTML = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-secondary');
+        }, 2000);
+    });
+}
+</script>
 {% endblock %}

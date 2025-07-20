@@ -1,11 +1,11 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from . import views
 
 app_name = 'posts'
 
 urlpatterns = [
-    # Temporary placeholder views - will be replaced with proper views later
-    path('', TemplateView.as_view(template_name='posts/post_list.html'), name='list'),
-    path('<slug:slug>/', TemplateView.as_view(template_name='posts/post_detail.html'), name='detail'),
-    path('category/<slug:slug>/', TemplateView.as_view(template_name='posts/category_posts.html'), name='category'),
+    path('', views.PostListView.as_view(), name='list'),
+    path('search/', views.search_posts, name='search'),
+    path('category/<slug:slug>/', views.CategoryPostsView.as_view(), name='category'),
+    path('<slug:slug>/', views.PostDetailView.as_view(), name='detail'),
 ]

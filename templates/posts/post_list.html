@@ -1,10 +1,265 @@
 {% extends 'base.html' %}
 
-{% block title %}Posts{% endblock %}
+{% block title %}Blog Posts{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-6">Posts</h1>
-    <p class="text-muted-foreground">Post list coming soon...</p>
+<div class="container py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark mb-4">Latest Blog Posts</h1>
+        <p class="lead text-muted mx-auto" style="max-width: 600px;">
+            Discover insights, tutorials, and thoughts on technology, development, and innovation.
+        </p>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <form method="GET" action="{% url 'posts:search' %}">
+                <div class="search-box">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Search posts..." 
+                               value="{{ request.GET.q }}">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="text-center mb-5">
+        <div class="d-inline-flex flex-wrap gap-2">
+            <a href="{% url 'posts:list' %}" class="category-pill {% if not request.resolver_match.kwargs.slug %}active{% endif %}">
+                <i class="bi bi-grid me-1"></i>All Posts
+            </a>
+            {% for category in categories %}
+                {% if category.slug %}
+                <a href="{% url 'posts:category' category.slug %}" 
+                   class="category-pill {% if request.resolver_match.kwargs.slug == category.slug %}active{% endif %}"
+                   style="border-color: {{ category.color }};">
+                    {{ category.name }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Featured Posts -->
+    {% if featured_posts and not request.resolver_match.kwargs.slug %}
+    <div class="mb-5">
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="h3 mb-0 me-3">Featured Posts</h2>
+            <span class="badge bg-warning text-dark">
+                <i class="bi bi-star-fill me-1"></i>Featured
+            </span>
+        </div>
+        
+        <div class="row g-4">
+            {% for post in featured_posts %}
+            <div class="col-lg-4 col-md-6">
+                <article class="post-card card h-100">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="card-img-top">
+                    {% else %}
+                    <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center text-white" style="height: 200px; background: linear-gradient(135deg, {{ post.category.color|default:'#007bff' }}, #764ba2);">
+                        <i class="bi bi-journal-text" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            {% if post.category and post.category.slug %}
+                            <span class="badge me-2" style="background-color: {{ post.category.color }}; color: white;">
+                                {{ post.category.name }}
+                            </span>
+                            {% endif %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-star-fill me-1"></i>Featured
+                            </span>
+                        </div>
+                        
+                        <h5 class="card-title">
+                            <a href="{% url 'posts:detail' post.slug %}" class="post-title">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+                        
+                        <p class="post-excerpt flex-grow-1">{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+                        
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center post-meta mb-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-person me-1"></i>{{ post.author.display_name }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>{{ post.published_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-3">
+                                    <div class="stats-item">
+                                        <i class="bi bi-eye"></i>
+                                        <span>{{ post.views_count }}</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <i class="bi bi-heart"></i>
+                                        <span>{{ post.likes_count }}</span>
+                                    </div>
+                                </div>
+                                <a href="{% url 'posts:detail' post.slug %}" class="btn btn-outline-primary btn-sm">
+                                    Read More <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <hr class="my-5">
+    </div>
+    {% endif %}
+
+    <!-- All Posts -->
+    <div class="mb-5">
+        {% if request.resolver_match.kwargs.slug %}
+        <div class="d-flex align-items-center mb-4">
+            <h2 class="h3 mb-0 me-3">{{ category.name }} Posts</h2>
+            <span class="badge" style="background-color: {{ category.color }}; color: white;">
+                {{ posts|length }} post{{ posts|length|pluralize }}
+            </span>
+        </div>
+        {% else %}
+        <h2 class="h3 mb-4">All Posts</h2>
+        {% endif %}
+        
+        {% if posts %}
+        <div class="row g-4">
+            {% for post in posts %}
+            <div class="col-lg-4 col-md-6">
+                <article class="post-card card h-100">
+                    {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="card-img-top">
+                    {% else %}
+                    <div class="card-img-top bg-gradient d-flex align-items-center justify-content-center text-white" style="height: 200px; background: linear-gradient(135deg, {{ post.category.color|default:'#6c757d' }}, #495057);">
+                        <i class="bi bi-journal-text" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="card-body d-flex flex-column">
+                        <div class="mb-3">
+                            {% if post.category and post.category.slug %}
+                            <span class="badge me-2" style="background-color: {{ post.category.color }}; color: white;">
+                                {{ post.category.name }}
+                            </span>
+                            {% endif %}
+                            {% if post.is_featured %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="bi bi-star-fill me-1"></i>Featured
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <h5 class="card-title">
+                            <a href="{% url 'posts:detail' post.slug %}" class="post-title">
+                                {{ post.title }}
+                            </a>
+                        </h5>
+                        
+                        <p class="post-excerpt flex-grow-1">{{ post.excerpt|default:post.content|truncatewords:20 }}</p>
+                        
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center post-meta mb-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-person me-1"></i>{{ post.author.display_name }}
+                                </small>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>{{ post.published_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-3">
+                                    <div class="stats-item">
+                                        <i class="bi bi-eye"></i>
+                                        <span>{{ post.views_count }}</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <i class="bi bi-heart"></i>
+                                        <span>{{ post.likes_count }}</span>
+                                    </div>
+                                </div>
+                                <a href="{% url 'posts:detail' post.slug %}" class="btn btn-outline-primary btn-sm">
+                                    Read More <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Posts pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="bi bi-journal-x text-muted" style="font-size: 4rem;"></i>
+            </div>
+            <h3 class="h4 mb-3">No Posts Found</h3>
+            <p class="text-muted mb-4">
+                {% if request.resolver_match.kwargs.slug %}
+                No posts found in this category.
+                {% else %}
+                There are no published posts yet.
+                {% endif %}
+            </p>
+            {% if user.is_staff %}
+            <a href="/admin/posts/post/add/" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>Create First Post
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

@@ -1,9 +1,9 @@
-# backend/urls.py
+# تحديث backend/urls.py
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView
 
 urlpatterns = [
     # Admin
@@ -20,8 +20,8 @@ urlpatterns = [
     path('profiles/', include('apps.profiles.urls')),
     path('posts/', include('apps.posts.urls')),
     
-    # Home page
-    path('', TemplateView.as_view(template_name='base.html'), name='home'),
+    # Home page - redirect to posts
+    path('', RedirectView.as_view(url='/posts/', permanent=False), name='home'),
 ]
 
 # Serve media files in development

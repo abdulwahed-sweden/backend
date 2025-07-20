@@ -1,4 +1,3 @@
-# apps/users/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
@@ -12,6 +11,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'is_verified', 'created_at')
     search_fields = ('email', 'username', 'first_name', 'last_name')
     ordering = ('-created_at',)
+    list_per_page = 25
     
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
@@ -30,3 +30,8 @@ class UserAdmin(BaseUserAdmin):
     )
     
     readonly_fields = ('created_at', 'updated_at')
+
+# تخصيص عنوان Admin Panel
+admin.site.site_header = "Django Backend Admin"
+admin.site.site_title = "Django Backend Admin Portal"
+admin.site.index_title = "Welcome to Django Backend Administration"

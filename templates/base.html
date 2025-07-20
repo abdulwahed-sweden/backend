@@ -1,249 +1,470 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-100">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Django Backend{% endblock %}</title>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <!-- Custom Tailwind Config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        border: "hsl(var(--border))",
-                        input: "hsl(var(--input))",
-                        ring: "hsl(var(--ring))",
-                        background: "hsl(var(--background))",
-                        foreground: "hsl(var(--foreground))",
-                        primary: {
-                            DEFAULT: "hsl(var(--primary))",
-                            foreground: "hsl(var(--primary-foreground))",
-                        },
-                        secondary: {
-                            DEFAULT: "hsl(var(--secondary))",
-                            foreground: "hsl(var(--secondary-foreground))",
-                        },
-                        destructive: {
-                            DEFAULT: "hsl(var(--destructive))",
-                            foreground: "hsl(var(--destructive-foreground))",
-                        },
-                        muted: {
-                            DEFAULT: "hsl(var(--muted))",
-                            foreground: "hsl(var(--muted-foreground))",
-                        },
-                        accent: {
-                            DEFAULT: "hsl(var(--accent))",
-                            foreground: "hsl(var(--accent-foreground))",
-                        },
-                        popover: {
-                            DEFAULT: "hsl(var(--popover))",
-                            foreground: "hsl(var(--popover-foreground))",
-                        },
-                        card: {
-                            DEFAULT: "hsl(var(--card))",
-                            foreground: "hsl(var(--card-foreground))",
-                        },
-                    },
-                    borderRadius: {
-                        lg: "var(--radius)",
-                        md: "calc(var(--radius) - 2px)",
-                        sm: "calc(var(--radius) - 4px)",
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        arabic: ['Tajawal', 'system-ui', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS Variables for Shadcn-like styling -->
+    <!-- Custom CSS -->
     <style>
         :root {
-            --background: 0 0% 100%;
-            --foreground: 222.2 84% 4.9%;
-            --card: 0 0% 100%;
-            --card-foreground: 222.2 84% 4.9%;
-            --popover: 0 0% 100%;
-            --popover-foreground: 222.2 84% 4.9%;
-            --primary: 221.2 83.2% 53.3%;
-            --primary-foreground: 210 40% 98%;
-            --secondary: 210 40% 96%;
-            --secondary-foreground: 222.2 84% 4.9%;
-            --muted: 210 40% 96%;
-            --muted-foreground: 215.4 16.3% 46.9%;
-            --accent: 210 40% 96%;
-            --accent-foreground: 222.2 84% 4.9%;
-            --destructive: 0 84.2% 60.2%;
-            --destructive-foreground: 210 40% 98%;
-            --border: 214.3 31.8% 91.4%;
-            --input: 214.3 31.8% 91.4%;
-            --ring: 221.2 83.2% 53.3%;
-            --radius: 0.5rem;
+            --bs-primary: #0d6efd;
+            --bs-secondary: #6c757d;
+            --bs-success: #198754;
+            --bs-info: #0dcaf0;
+            --bs-warning: #ffc107;
+            --bs-danger: #dc3545;
+            --bs-light: #f8f9fa;
+            --bs-dark: #212529;
+            --bs-body-bg: #ffffff;
+            --bs-body-color: #212529;
+            --custom-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --custom-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            --custom-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.175);
         }
-        
-        .dark {
-            --background: 222.2 84% 4.9%;
-            --foreground: 210 40% 98%;
-            --card: 222.2 84% 4.9%;
-            --card-foreground: 210 40% 98%;
-            --popover: 222.2 84% 4.9%;
-            --popover-foreground: 210 40% 98%;
-            --primary: 217.2 91.2% 59.8%;
-            --primary-foreground: 222.2 84% 4.9%;
-            --secondary: 217.2 32.6% 17.5%;
-            --secondary-foreground: 210 40% 98%;
-            --muted: 217.2 32.6% 17.5%;
-            --muted-foreground: 215 20.2% 65.1%;
-            --accent: 217.2 32.6% 17.5%;
-            --accent-foreground: 210 40% 98%;
-            --destructive: 0 62.8% 30.6%;
-            --destructive-foreground: 210 40% 98%;
-            --border: 217.2 32.6% 17.5%;
-            --input: 217.2 32.6% 17.5%;
-            --ring: 224.3 76.3% 94.1%;
-        }
-        
-        * {
-            border-color: hsl(var(--border));
-        }
-        
+
         body {
-            background-color: hsl(var(--background));
-            color: hsl(var(--foreground));
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: #f8f9fa;
         }
-        
-        /* Component styles */
-        .btn {
-            @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+
+        /* Navigation */
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
         }
-        
-        .btn-primary {
-            @apply bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4;
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
-        .btn-secondary {
-            @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 h-10 py-2 px-4;
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            margin: 0 0.5rem;
+            transition: all 0.3s ease;
         }
-        
-        .btn-outline {
-            @apply border border-input hover:bg-accent hover:text-accent-foreground h-10 py-2 px-4;
+
+        .navbar-nav .nav-link:hover {
+            color: var(--bs-primary) !important;
+            transform: translateY(-1px);
         }
-        
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--custom-gradient);
+            color: white;
+            padding: 4rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><radialGradient id="a" cx="50" cy="50" r="50"><stop offset="0" stop-color="rgba(255,255,255,0.1)"/><stop offset="1" stop-color="rgba(255,255,255,0)"/></radialGradient></defs><circle cx="50" cy="10" r="3" fill="url(%23a)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Cards */
         .card {
-            @apply rounded-lg border bg-card text-card-foreground shadow-sm;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: var(--custom-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
-        
-        .input {
-            @apply flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--custom-shadow-lg);
         }
-        
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        /* Badges */
         .badge {
-            @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+            font-weight: 500;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.5rem;
         }
-        
-        .badge-default {
-            @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+
+        .badge-gradient {
+            background: var(--custom-gradient);
+            color: white;
         }
-        
-        .badge-secondary {
-            @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+
+        /* Buttons */
+        .btn {
+            font-weight: 500;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
         }
-        
-        .badge-outline {
-            @apply text-foreground;
+
+        .btn-primary {
+            background: var(--custom-gradient);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.5rem 1rem rgba(13, 110, 253, 0.25);
+        }
+
+        .btn-outline-primary {
+            border: 2px solid var(--bs-primary);
+            font-weight: 600;
+        }
+
+        .btn-outline-primary:hover {
+            background: var(--bs-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Search */
+        .search-box {
+            background: white;
+            border-radius: 3rem;
+            padding: 0.5rem;
+            box-shadow: var(--custom-shadow);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box .form-control {
+            border: none;
+            background: transparent;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .search-box .form-control:focus {
+            box-shadow: none;
+        }
+
+        .search-box .btn {
+            border-radius: 50%;
+            width: 3rem;
+            height: 3rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Category Pills */
+        .category-pill {
+            background: white;
+            border: 2px solid var(--bs-light);
+            color: var(--bs-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            margin: 0.25rem;
+            display: inline-block;
+        }
+
+        .category-pill:hover {
+            background: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white;
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        .category-pill.active {
+            background: var(--bs-primary);
+            border-color: var(--bs-primary);
+            color: white;
+        }
+
+        /* Post Cards */
+        .post-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: var(--custom-shadow);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--custom-shadow-lg);
+        }
+
+        .post-meta {
+            font-size: 0.875rem;
+            color: var(--bs-secondary);
+        }
+
+        .post-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--bs-dark);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-title:hover {
+            color: var(--bs-primary);
+            text-decoration: none;
+        }
+
+        .post-excerpt {
+            color: var(--bs-secondary);
+            line-height: 1.6;
+        }
+
+        /* Stats */
+        .stats-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--bs-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--bs-dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer h5 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer a {
+            color: rgba(255, 255, 255, 0.75);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        /* Alerts */
+        .alert {
+            border: none;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            color: #0c5460;
+        }
+
+        /* Pagination */
+        .pagination .page-link {
+            border: none;
+            background: white;
+            color: var(--bs-primary);
+            margin: 0 0.25rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            box-shadow: var(--custom-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-link:hover {
+            background: var(--bs-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--bs-primary);
+            box-shadow: var(--custom-shadow-lg);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 2rem 0;
+            }
+            
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+            
+            .search-box {
+                margin: 1rem 0;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bs-primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0b5ed7;
         }
     </style>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     {% block extra_css %}{% endblock %}
 </head>
-<body class="min-h-full font-sans antialiased">
+<body class="d-flex flex-column h-100">
     <!-- Navigation -->
-    <nav class="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div class="container mx-auto px-4">
-            <div class="flex h-16 items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="flex items-center space-x-2">
-                        <i data-lucide="zap" class="h-6 w-6 text-primary"></i>
-                        <span class="text-xl font-bold">Django Backend</span>
-                    </a>
-                </div>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-lightning-charge-fill text-primary me-2"></i>
+                <span class="text-gradient">Django Backend</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="bi bi-house me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/posts/">
+                            <i class="bi bi-journal-text me-1"></i>Posts
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/api/v1/">
+                            <i class="bi bi-code-slash me-1"></i>API
+                        </a>
+                    </li>
+                </ul>
                 
-                <!-- Main Navigation -->
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="/" class="text-foreground/60 hover:text-foreground transition-colors">
-                        Home
-                    </a>
-                    <a href="/posts/" class="text-foreground/60 hover:text-foreground transition-colors">
-                        Posts
-                    </a>
-                    <a href="/api/v1/" class="text-foreground/60 hover:text-foreground transition-colors">
-                        API
-                    </a>
-                </div>
-                
-                <!-- User Menu -->
-                <div class="flex items-center space-x-4">
+                <ul class="navbar-nav">
                     {% if user.is_authenticated %}
-                        <div class="flex items-center space-x-2">
-                            <img src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
-                                 alt="{{ user.display_name }}" 
-                                 class="h-8 w-8 rounded-full border-2 border-border">
-                            <span class="text-sm font-medium">{{ user.display_name }}</span>
-                        </div>
-                        <a href="/users/profile/" class="btn btn-outline">
-                            <i data-lucide="user" class="h-4 w-4 mr-2"></i>
-                            Profile
-                        </a>
-                        <a href="/users/logout/" class="btn btn-secondary">
-                            <i data-lucide="log-out" class="h-4 w-4 mr-2"></i>
-                            Logout
-                        </a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                                <img src="{{ user.profile.avatar.url|default:'/static/images/default-avatar.png' }}" 
+                                     alt="{{ user.display_name }}" 
+                                     class="rounded-circle me-2" width="32" height="32">
+                                {{ user.display_name }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/users/profile/">
+                                    <i class="bi bi-person me-2"></i>Profile
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/users/logout/">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </a></li>
+                            </ul>
+                        </li>
                     {% else %}
-                        <a href="/users/login/" class="btn btn-outline">
-                            <i data-lucide="log-in" class="h-4 w-4 mr-2"></i>
-                            Login
-                        </a>
-                        <a href="/users/register/" class="btn btn-primary">
-                            <i data-lucide="user-plus" class="h-4 w-4 mr-2"></i>
-                            Register
-                        </a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/users/login/">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-2" href="/users/register/">
+                                <i class="bi bi-person-plus me-1"></i>Register
+                            </a>
+                        </li>
                     {% endif %}
-                </div>
+                </ul>
             </div>
         </div>
     </nav>
     
     <!-- Main Content -->
-    <main class="flex-1">
+    <main class="flex-shrink-0" style="margin-top: 76px;">
+        <!-- Messages -->
         {% if messages %}
-            <div class="container mx-auto px-4 py-4">
+            <div class="container mt-3">
                 {% for message in messages %}
-                    <div class="mb-4 rounded-lg border p-4 {% if message.tags == 'error' %}border-destructive bg-destructive/10 text-destructive{% elif message.tags == 'success' %}border-green-200 bg-green-50 text-green-800{% elif message.tags == 'warning' %}border-yellow-200 bg-yellow-50 text-yellow-800{% else %}border-blue-200 bg-blue-50 text-blue-800{% endif %}">
-                        <div class="flex items-center">
-                            {% if message.tags == 'error' %}
-                                <i data-lucide="alert-circle" class="h-5 w-5 mr-2"></i>
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center">
+                            {% if message.tags == 'error' or message.tags == 'danger' %}
+                                <i class="bi bi-exclamation-circle-fill me-2"></i>
                             {% elif message.tags == 'success' %}
-                                <i data-lucide="check-circle" class="h-5 w-5 mr-2"></i>
+                                <i class="bi bi-check-circle-fill me-2"></i>
                             {% elif message.tags == 'warning' %}
-                                <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             {% else %}
-                                <i data-lucide="info" class="h-5 w-5 mr-2"></i>
+                                <i class="bi bi-info-circle-fill me-2"></i>
                             {% endif %}
-                            {{ message }}
+                            <div>{{ message }}</div>
                         </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -251,134 +472,184 @@
         
         {% block content %}
             <!-- Hero Section -->
-            <section class="py-20 px-4">
-                <div class="container mx-auto text-center">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                        Django Backend API
-                    </h1>
-                    <p class="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-                        A modern, full-stack Django application with REST API, user management, profiles, and posts. 
-                        Built with Tailwind CSS and Shadcn-inspired components.
-                    </p>
-                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="/api/v1/" class="btn btn-primary">
-                            <i data-lucide="api" class="h-4 w-4 mr-2"></i>
-                            Explore API
-                        </a>
-                        <a href="/admin/" class="btn btn-outline">
-                            <i data-lucide="settings" class="h-4 w-4 mr-2"></i>
-                            Admin Panel
-                        </a>
+            <section class="hero-section">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8 mx-auto text-center hero-content">
+                            <h1 class="display-4 fw-bold mb-4 fade-in-up">
+                                Django Backend API
+                            </h1>
+                            <p class="lead mb-4 fade-in-up" style="animation-delay: 0.2s;">
+                                A modern, full-stack Django application with REST API, user management, profiles, and posts. 
+                                Built with Bootstrap 5 and beautiful, responsive components.
+                            </p>
+                            <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center fade-in-up" style="animation-delay: 0.4s;">
+                                <a href="/api/v1/" class="btn btn-light btn-lg">
+                                    <i class="bi bi-code-slash me-2"></i>Explore API
+                                </a>
+                                <a href="/admin/" class="btn btn-outline-light btn-lg">
+                                    <i class="bi bi-gear me-2"></i>Admin Panel
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
             
             <!-- Features Section -->
-            <section class="py-16 px-4 bg-muted/50">
-                <div class="container mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-12">Features</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <section class="py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto text-center mb-5">
+                            <h2 class="display-5 fw-bold">Powerful Features</h2>
+                            <p class="lead text-muted">Everything you need to build modern web applications</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4">
                         <!-- User Management -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="users" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">User Management</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-primary bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-people text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">User Management</h5>
+                                    <p class="card-text text-muted">
+                                        Complete user authentication system with registration, login, profiles, and permissions.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Complete user authentication system with registration, login, profiles, and permissions.
-                            </p>
                         </div>
                         
                         <!-- REST API -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="globe" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">REST API</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-success bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-globe text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">REST API</h5>
+                                    <p class="card-text text-muted">
+                                        Full-featured REST API with CRUD operations, pagination, filtering, and authentication.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Full-featured REST API with CRUD operations, pagination, filtering, and authentication.
-                            </p>
                         </div>
                         
                         <!-- Content Management -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="file-text" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">Content Management</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-info bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-journal-text text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Content Management</h5>
+                                    <p class="card-text text-muted">
+                                        Blog posts with categories, tags, comments, likes, and advanced content features.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Blog posts with categories, tags, comments, likes, and advanced content features.
-                            </p>
                         </div>
                         
                         <!-- Modern UI -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="palette" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">Modern UI</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-warning bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-palette text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Modern UI</h5>
+                                    <p class="card-text text-muted">
+                                        Beautiful, responsive interface built with Bootstrap 5 and modern design principles.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Beautiful, responsive interface built with Tailwind CSS and Shadcn-inspired components.
-                            </p>
                         </div>
                         
                         <!-- Database -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="database" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">PostgreSQL</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-danger bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-database text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">PostgreSQL</h5>
+                                    <p class="card-text text-muted">
+                                        Robust PostgreSQL database with optimized queries and proper relationships.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Robust PostgreSQL database with optimized queries and proper relationships.
-                            </p>
                         </div>
                         
                         <!-- Security -->
-                        <div class="card p-6">
-                            <div class="flex items-center mb-4">
-                                <i data-lucide="shield" class="h-8 w-8 text-primary mr-3"></i>
-                                <h3 class="text-xl font-semibold">Security</h3>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card text-center h-100">
+                                <div class="card-body">
+                                    <div class="bg-dark bg-gradient rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 3rem; height: 3rem;">
+                                        <i class="bi bi-shield-check text-white"></i>
+                                    </div>
+                                    <h5 class="card-title">Security</h5>
+                                    <p class="card-text text-muted">
+                                        Built-in security features with CSRF protection, authentication, and permissions.
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-muted-foreground">
-                                Built-in security features with CSRF protection, authentication, and permissions.
-                            </p>
                         </div>
                     </div>
                 </div>
             </section>
             
             <!-- API Endpoints Section -->
-            <section class="py-16 px-4">
-                <div class="container mx-auto">
-                    <h2 class="text-3xl font-bold text-center mb-12">API Endpoints</h2>
-                    <div class="max-w-4xl mx-auto">
-                        <div class="card p-6">
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between border-b pb-2">
-                                    <span class="font-mono text-sm">GET /api/v1/users/</span>
-                                    <span class="badge badge-default">Users</span>
-                                </div>
-                                <div class="flex items-center justify-between border-b pb-2">
-                                    <span class="font-mono text-sm">GET /api/v1/profiles/</span>
-                                    <span class="badge badge-default">Profiles</span>
-                                </div>
-                                <div class="flex items-center justify-between border-b pb-2">
-                                    <span class="font-mono text-sm">GET /api/v1/posts/</span>
-                                    <span class="badge badge-default">Posts</span>
-                                </div>
-                                <div class="flex items-center justify-between border-b pb-2">
-                                    <span class="font-mono text-sm">GET /api/v1/categories/</span>
-                                    <span class="badge badge-default">Categories</span>
-                                </div>
-                                <div class="flex items-center justify-between border-b pb-2">
-                                    <span class="font-mono text-sm">GET /api/v1/comments/</span>
-                                    <span class="badge badge-default">Comments</span>
-                                </div>
-                                <div class="text-center pt-4">
-                                    <a href="/api/v1/" class="btn btn-outline">
-                                        <i data-lucide="external-link" class="h-4 w-4 mr-2"></i>
-                                        Browse Full API
-                                    </a>
+            <section class="py-5 bg-light">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-8 mx-auto">
+                            <div class="text-center mb-5">
+                                <h2 class="display-5 fw-bold">API Endpoints</h2>
+                                <p class="lead text-muted">Explore our comprehensive REST API</p>
+                            </div>
+                            
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                                <code class="text-primary">GET /api/v1/users/</code>
+                                                <span class="badge badge-gradient">Users</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                                <code class="text-primary">GET /api/v1/profiles/</code>
+                                                <span class="badge badge-gradient">Profiles</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                                <code class="text-primary">GET /api/v1/posts/</code>
+                                                <span class="badge badge-gradient">Posts</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center border-bottom pb-2">
+                                                <code class="text-primary">GET /api/v1/categories/</code>
+                                                <span class="badge badge-gradient">Categories</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <code class="text-primary">GET /api/v1/comments/</code>
+                                                <span class="badge badge-gradient">Comments</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-4">
+                                        <a href="/api/v1/" class="btn btn-outline-primary">
+                                            <i class="bi bi-arrow-right me-2"></i>Browse Full API
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -389,73 +660,64 @@
     </main>
     
     <!-- Footer -->
-    <footer class="border-t bg-background py-12 px-4">
-        <div class="container mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div class="space-y-4">
-                    <div class="flex items-center space-x-2">
-                        <i data-lucide="zap" class="h-6 w-6 text-primary"></i>
-                        <span class="text-lg font-bold">Django Backend</span>
-                    </div>
-                    <p class="text-sm text-muted-foreground">
-                        Modern Django application with REST API, built for scalability and performance.
-                    </p>
+    <footer class="footer mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5><i class="bi bi-lightning-charge-fill text-primary me-2"></i>Django Backend</h5>
+                    <p class="text-muted">Modern Django application with REST API, built for scalability and performance.</p>
                 </div>
                 
-                <div class="space-y-4">
-                    <h4 class="font-semibold">API</h4>
-                    <div class="space-y-2 text-sm">
-                        <a href="/api/v1/" class="block text-muted-foreground hover:text-foreground">Documentation</a>
-                        <a href="/api/v1/users/" class="block text-muted-foreground hover:text-foreground">Users</a>
-                        <a href="/api/v1/posts/" class="block text-muted-foreground hover:text-foreground">Posts</a>
-                        <a href="/api/v1/categories/" class="block text-muted-foreground hover:text-foreground">Categories</a>
-                    </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>API</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/api/v1/">Documentation</a></li>
+                        <li><a href="/api/v1/users/">Users</a></li>
+                        <li><a href="/api/v1/posts/">Posts</a></li>
+                        <li><a href="/api/v1/categories/">Categories</a></li>
+                    </ul>
                 </div>
                 
-                <div class="space-y-4">
-                    <h4 class="font-semibold">Apps</h4>
-                    <div class="space-y-2 text-sm">
-                        <a href="/users/" class="block text-muted-foreground hover:text-foreground">Users</a>
-                        <a href="/profiles/" class="block text-muted-foreground hover:text-foreground">Profiles</a>
-                        <a href="/posts/" class="block text-muted-foreground hover:text-foreground">Posts</a>
-                        <a href="/admin/" class="block text-muted-foreground hover:text-foreground">Admin</a>
-                    </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Apps</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="/users/">Users</a></li>
+                        <li><a href="/profiles/">Profiles</a></li>
+                        <li><a href="/posts/">Posts</a></li>
+                        <li><a href="/admin/">Admin</a></li>
+                    </ul>
                 </div>
                 
-                <div class="space-y-4">
-                    <h4 class="font-semibold">Resources</h4>
-                    <div class="space-y-2 text-sm">
-                        <a href="https://docs.djangoproject.com/" target="_blank" class="block text-muted-foreground hover:text-foreground">Django Docs</a>
-                        <a href="https://www.django-rest-framework.org/" target="_blank" class="block text-muted-foreground hover:text-foreground">DRF Docs</a>
-                        <a href="https://tailwindcss.com/" target="_blank" class="block text-muted-foreground hover:text-foreground">Tailwind CSS</a>
-                        <a href="https://lucide.dev/" target="_blank" class="block text-muted-foreground hover:text-foreground">Lucide Icons</a>
-                    </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h5>Resources</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="https://docs.djangoproject.com/" target="_blank">Django Docs</a></li>
+                        <li><a href="https://www.django-rest-framework.org/" target="_blank">DRF Docs</a></li>
+                        <li><a href="https://getbootstrap.com/" target="_blank">Bootstrap</a></li>
+                        <li><a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons</a></li>
+                    </ul>
                 </div>
             </div>
             
-            <div class="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-muted-foreground">
-                    © 2025 Django Backend. Built with Django, DRF, and Tailwind CSS.
-                </p>
-                <div class="flex items-center space-x-4 mt-4 md:mt-0">
-                    <a href="#" class="text-muted-foreground hover:text-foreground">
-                        <i data-lucide="github" class="h-5 w-5"></i>
-                    </a>
-                    <a href="#" class="text-muted-foreground hover:text-foreground">
-                        <i data-lucide="twitter" class="h-5 w-5"></i>
-                    </a>
-                    <a href="#" class="text-muted-foreground hover:text-foreground">
-                        <i data-lucide="linkedin" class="h-5 w-5"></i>
-                    </a>
+            <hr class="my-4">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">© 2025 Django Backend. Built with Django, DRF, and Bootstrap 5.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links">
+                        <a href="#" class="text-muted me-3"><i class="bi bi-github"></i></a>
+                        <a href="#" class="text-muted me-3"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-muted"><i class="bi bi-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
     </footer>
     
-    <!-- Initialize Lucide Icons -->
-    <script>
-        lucide.createIcons();
-    </script>
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     {% block extra_js %}{% endblock %}
 </body>
